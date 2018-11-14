@@ -7,13 +7,13 @@
   <div>
     <oj-data-grid
       id="datagrid"
-      style="height:400px; max-width:477px"
+      style="height:300px; max-width:600px"
       aria-label="Data Grid CRUD Demo"
       data="[[dataSource]]"
       on-selection-changed="[[handleSelectionChanged]]"
       selection-mode.row="single"
       dnd.reorder.row="enable"
-      header.column.style="width:150px">
+      header.column.style="width:40%">
     </oj-data-grid>
   </div>
   <div>
@@ -28,8 +28,9 @@
                      aria-label="submit group" role="group">
                     <!--oj-button id="addbutton" data-bind="click: add">Add</oj-button-->
                     <oj-button id="updateButton" data-bind="click: update">Update</oj-button>
-                    <!--
+
                     <oj-button id="removeButton" data-bind="click: remove">Remove</oj-button>
+                  <!--
                     <oj-button id="resetFields" data-bind="click: resetFields">Reset Fields</oj-button>
                   -->
   </div>

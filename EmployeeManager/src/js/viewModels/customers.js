@@ -6,7 +6,7 @@
 /*
  * Your customer ViewModel code goes here
  */
-define(['ojs/ojcore', 'knockout', 'jquery','text!../data/restservices.json', 'ojs/ojdatagrid', 'ojs/ojcollectiondatagriddatasource','ojs/ojinputtext', 'ojs/ojformlayout'],
+define(['ojs/ojcore', 'knockout', 'jquery','text!../data/restservices.json', 'ojs/ojdatagrid', 'ojs/ojcollectiondatagriddatasource','ojs/ojinputtext', 'ojs/ojformlayout', 'ojs/ojmasonrylayout'],
  function(oj, ko, $, restservices) {
 
     function CustomerViewModel() {
@@ -75,7 +75,17 @@ define(['ojs/ojcore', 'knockout', 'jquery','text!../data/restservices.json', 'oj
               }
             });
           //};
+          console.log("Updated department name: " + self.inputDepartmentName());
+        };
+
+        self.add = function() {
+          console.log("add function");
           console.log("New department name: " + self.inputDepartmentName());
+        };
+
+        self.remove = function() {
+          console.log("remove function");
+          console.log("Remove department name: " + self.inputDepartmentName());
         };
       // Below are a set of the ViewModel methods invoked by the oj-module component.
       // Please reference the oj-module jsDoc for additional information.
