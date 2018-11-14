@@ -1,0 +1,36 @@
+<!--
+ Copyright (c) 2014, 2018, Oracle and/or its affiliates.
+ The Universal Permissive License (UPL), Version 1.0
+ -->
+<div class="oj-hybrid-padding">
+  <h1>Departments</h1>
+  <div>
+    <oj-data-grid
+      id="datagrid"
+      style="height:400px; max-width:477px"
+      aria-label="Data Grid CRUD Demo"
+      data="[[dataSource]]"
+      on-selection-changed="[[handleSelectionChanged]]"
+      selection-mode.row="single"
+      dnd.reorder.row="enable"
+      header.column.style="width:150px">
+    </oj-data-grid>
+  </div>
+  <div>
+    <oj-form-layout id="form-container" label-edge="top">
+        <oj-input-text id="departmentNameInput" label-hint="Department Name" value="{{inputDepartmentName}}"></oj-input-text>
+        <oj-input-text id="locationNameInput" label-hint="Location Name" value="{{inputLocationName}}"></oj-input-text>
+    </oj-form-layout>
+  </div>
+
+  <!-- Buttons -->
+  <div class="oj-form-control-group"
+                     aria-label="submit group" role="group">
+                    <!--oj-button id="addbutton" data-bind="click: add">Add</oj-button-->
+                    <oj-button id="updateButton" data-bind="click: update">Update</oj-button>
+                    <!--
+                    <oj-button id="removeButton" data-bind="click: remove">Remove</oj-button>
+                    <oj-button id="resetFields" data-bind="click: resetFields">Reset Fields</oj-button>
+                  -->
+  </div>
+</div>
