@@ -85,6 +85,8 @@ define(['ojs/ojcore', 'knockout', 'jquery','text!../data/restservices.json', 'oj
 
         self.remove = function() {
           console.log("remove function");
+          self.modelToUpdate = self.collection.get(self.inputDepartmentID());
+          self.modelToUpdate.destroy();
           console.log("Remove department name: " + self.inputDepartmentName());
         };
       // Below are a set of the ViewModel methods invoked by the oj-module component.
