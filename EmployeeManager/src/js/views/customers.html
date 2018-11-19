@@ -2,15 +2,41 @@
  Copyright (c) 2014, 2018, Oracle and/or its affiliates.
  The Universal Permissive License (UPL), Version 1.0
  -->
-  <div class="demo-scroll-container" style="width: 100%">
-      <h1>Departments</h1>    
-    <oj-masonry-layout id="masonryLayout">
-      <div class="oj-hybrid-padding oj-masonrylayout-tile-3x1" >
 
+<!--
+ <div class="oj-flex demo-panelwrapper">
+
+   <div class="oj-flex-item oj-flex oj-sm-flex-items-1 oj-sm-12 oj-md-4 oj-lg-3 oj-xl-2">
+     <div class="oj-flex-item oj-panel demo-mypanel">
+       <h3>Spain</h3>
+       <ol>
+         <li>manchego</li>
+       </ol>
+     </div>
+   </div>
+
+
+
+   <div class="oj-flex-item oj-flex oj-sm-flex-items-1 oj-sm-12 oj-md-4 oj-lg-3 oj-xl-2">
+     <div class="oj-flex-item oj-panel demo-mypanel">
+     <h3>America</h3>
+     <ol>
+       <li>cheddar</li>
+       <li>colby</li>
+     </ol>
+    </div>
+   </div>
+-->
+
+
+  <div class="oj-flex" style="width: 100%">
+    <div class="oj-flex-item oj-flex oj-sm-flex-items-1 oj-sm-12 oj-md-6 oj-lg-7 oj-xl-7">
+      <div class="oj-flex-item oj-panel">
+        <h2>Departments</h2>
         <div>
           <oj-data-grid
             id="datagrid"
-            style="height:300px; max-width:600px"
+            style="height:200px; max-width:600px"
             aria-label="Data Grid CRUD Demo"
             data="[[dataSource]]"
             on-selection-changed="[[handleSelectionChanged]]"
@@ -19,9 +45,12 @@
             header.column.style="width:45%">
           </oj-data-grid>
         </div>
-
       </div>
-      <div class="oj-hybrid-padding oj-masonrylayout-tile-1x1" >
+    </div>
+
+    <div class="oj-flex-item oj-flex oj-sm-flex-items-1 oj-sm-12 oj-md-4 oj-lg-3 oj-xl-2">
+      <div class="oj-flex-item oj-panel">
+        <h2>Edit Department</h2>
         <div>
           <oj-form-layout id="form-container" label-edge="top">
             <oj-input-text id="departmentNameInput" label-hint="Department Name" value="{{inputDepartmentName}}"></oj-input-text>
@@ -42,5 +71,42 @@
         </div>
 
       </div>
-    </oj-masonry-layout>
+    </div>
+  </div>
+
+
+  <br>
+
+
+  <div class="oj-flex" style="width: 100%">
+    <div class="oj-flex-item oj-flex oj-sm-flex-items-1 oj-sm-12 oj-md-6 oj-lg-7 oj-xl-7">
+      <div class="oj-flex-item oj-panel">
+        <h2>Employees</h2>
+        <div>
+            Employee table here..
+        </div>
+      </div>
+    </div>
+
+    <div class="oj-flex-item oj-flex oj-sm-flex-items-1 oj-sm-12 oj-md-4 oj-lg-3 oj-xl-2">
+      <div class="oj-flex-item oj-panel">
+        <h2>Edit Employee</h2>
+      <div>
+          Employee form here...
+      </div>
+
+        <!-- Buttons -->
+        <div class="oj-form-control-group"
+                           aria-label="submit group" role="group">
+                          <!--oj-button id="addbutton" data-bind="click: add">Add</oj-button-->
+                          <oj-button id="updateButton" data-bind="click: update">Update</oj-button>
+
+                          <oj-button id="removeButton" data-bind="click: remove">Remove</oj-button>
+                        <!--
+                          <oj-button id="resetFields" data-bind="click: resetFields">Reset Fields</oj-button>
+                        -->
+        </div>
+
+      </div>
+    </div>
   </div>
