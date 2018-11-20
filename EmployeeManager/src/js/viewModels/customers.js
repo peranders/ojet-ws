@@ -16,14 +16,14 @@ define(['ojs/ojcore', 'knockout', 'jquery','text!../data/restservices.json', 'oj
       self.url = JSON.parse(restservices).departments;
 
 
-      self.collection = new oj.Collection(null, {
+      self.DepCollection = new oj.Collection(null, {
           model: new oj.Model.extend({idAttribute: 'id'}),
           url: self.url
         }
       );
 
       self.dataSource = new oj.CollectionDataGridDataSource(
-        self.collection, {
+        self.DepCollection, {
           rowHeader: 'id',
           columns:['DEPARTMENT_NAME', 'LOCATION_NAME']
         });
@@ -55,7 +55,7 @@ define(['ojs/ojcore', 'knockout', 'jquery','text!../data/restservices.json', 'oj
           var selection = event.detail['value'][0];
           if (selection != null) {
             var rowKey = selection['startKey']['row'];
-            self.modelToUpdate = self.collection.get(rowKey);
+            self.modelToUpdate = self.DepCollection.get(rowKey);
             self.updateFields(self.modelToUpdate);
           }
         };
@@ -64,7 +64,7 @@ define(['ojs/ojcore', 'knockout', 'jquery','text!../data/restservices.json', 'oj
           console.log("update function");
           //if (self.modelToUpdate) {
           //  self.modelToUpdate.set(self.buildModel());
-            self.modelToUpdate = self.collection.get(self.inputDepartmentID());
+            self.modelToUpdate = self.DepCollection.get(self.inputDepartmentID());
             self.modelToUpdate.save(self.buildModel(), {
               contentType: 'application/json',
               success: function(model, response) {
@@ -85,7 +85,7 @@ define(['ojs/ojcore', 'knockout', 'jquery','text!../data/restservices.json', 'oj
 
         self.remove = function() {
           console.log("remove function");
-          self.modelToUpdate = self.collection.get(self.inputDepartmentID());
+          self.modelToUpdate = self.DepCollection.get(self.inputDepartmentID());
           self.modelToUpdate.destroy();
           console.log("Remove department name: " + self.inputDepartmentName());
         };
