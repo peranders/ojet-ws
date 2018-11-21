@@ -13,12 +13,12 @@ define(['ojs/ojcore', 'knockout', 'jquery','text!../data/restservices.json', 'oj
       var self = this;
 
       //Set data source endpoint
-      self.url = JSON.parse(restservices).departments;
+      self.DeptUrl = JSON.parse(restservices).departments;
 
 
       self.DepCollection = new oj.Collection(null, {
           model: new oj.Model.extend({idAttribute: 'id'}),
-          url: self.url
+          url: self.DeptUrl
         }
       );
 
@@ -35,7 +35,7 @@ define(['ojs/ojcore', 'knockout', 'jquery','text!../data/restservices.json', 'oj
         self.inputLocationName = ko.observable();
 
         //Function that creates json payload from fields in update form
-        self.buildModel = function () {
+        self.buildDeptModel = function () {
          return {
            'id': self.inputDepartmentID(),
            'DEPARTMENT_NAME': self.inputDepartmentName(),
@@ -48,6 +48,12 @@ define(['ojs/ojcore', 'knockout', 'jquery','text!../data/restservices.json', 'oj
           self.inputDepartmentID(model.get('id'));
           self.inputDepartmentName(model.get('DEPARTMENT_NAME'));
           self.inputLocationName(model.get('LOCATION_NAME'));
+        };
+
+        self.resetUpdateFields = function(){
+          self.inputDepartmentID(null);
+          self.inputDepartmentName(null);
+          self.inputLocationName(null);
         };
 
         self.handleSelectionChanged = function (event) {
@@ -65,7 +71,7 @@ define(['ojs/ojcore', 'knockout', 'jquery','text!../data/restservices.json', 'oj
           //if (self.modelToUpdate) {
           //  self.modelToUpdate.set(self.buildModel());
             self.modelToUpdate = self.DepCollection.get(self.inputDepartmentID());
-            self.modelToUpdate.save(self.buildModel(), {
+            self.modelToUpdate.save(self.buildDeptModel(), {
               contentType: 'application/json',
               success: function(model, response) {
                 console.log(self.inputDepartmentID() + " -- updated successfully")
@@ -86,8 +92,12 @@ define(['ojs/ojcore', 'knockout', 'jquery','text!../data/restservices.json', 'oj
         self.remove = function() {
           console.log("remove function");
           self.modelToUpdate = self.DepCollection.get(self.inputDepartmentID());
-          self.modelToUpdate.destroy();
-          console.log("Remove department name: " + self.inputDepartmentName());
+          if( self.modelToUpdate){
+            self.modelToUpdate.destroy();
+            console.log("Remove department name: " + self.inputDepartmentName());
+          };
+          self.resetUpdateFields();
+          //$('#datagrid').oj-data-grid('refresh');
         };
       // Below are a set of the ViewModel methods invoked by the oj-module component.
       // Please reference the oj-module jsDoc for additional information.
