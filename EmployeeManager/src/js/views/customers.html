@@ -35,11 +35,11 @@
         <h2>Departments</h2>
         <div>
           <oj-data-grid
-            id="datagrid"
+            id="depDatagrid"
             style="height:200px; max-width:600px"
             aria-label="Data Grid CRUD Demo"
-            data="[[dataSource]]"
-            on-selection-changed="[[handleSelectionChanged]]"
+            data="[[deptDataSource]]"
+            on-selection-changed="[[handleDepSelectionChanged]]"
             selection-mode.row="single"
             dnd.reorder.row="enable"
             header.column.style="width:45%">
@@ -83,7 +83,16 @@
       <div class="oj-flex-item oj-panel">
         <h2>Employees</h2>
         <div>
-            Employee table here..
+          <oj-data-grid
+            id="empDatagrid"
+            style="height:200px; max-width:600px"
+            aria-label="Data Grid CRUD Demo"
+            data="{{empDataSource}}"
+            on-selection-changed="[[handleEmpSelectionChanged]]"
+            selection-mode.row="single"
+            dnd.reorder.row="enable"
+            header.column.style="width:45%">
+          </oj-data-grid>
         </div>
       </div>
     </div>

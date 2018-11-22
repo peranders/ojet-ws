@@ -14,19 +14,35 @@ define(['ojs/ojcore', 'knockout', 'jquery','text!../data/restservices.json', 'oj
 
       //Set data source endpoint
       self.DeptUrl = JSON.parse(restservices).departments;
+      self.EmpsByDeptUrl = JSON.parse(restservices).empsByDepartment;
 
-
+      //Set collections
       self.DepCollection = new oj.Collection(null, {
           model: new oj.Model.extend({idAttribute: 'id'}),
           url: self.DeptUrl
         }
       );
+      self.EmpCollection = new oj.Collection(null, {
+          model: new oj.Model.extend({idAttribute: 'id'}),
+          url: self.EmpsByDeptUrl
+        }
+      );
 
-      self.dataSource = new oj.CollectionDataGridDataSource(
+      //Set datasources for oj-data-grid
+      self.deptDataSource = new oj.CollectionDataGridDataSource(
         self.DepCollection, {
           rowHeader: 'id',
           columns:['DEPARTMENT_NAME', 'LOCATION_NAME']
         });
+
+
+      self.empDataSource = new oj.CollectionDataGridDataSource(
+        self.EmpCollection, {
+          rowHeader: 'id',
+          columns:['LAST_NAME', 'FIRST_NAME', 'SALARY']
+        });
+
+
 
         //Set local vars to hold form values
         var nextKey = 121;
@@ -56,15 +72,36 @@ define(['ojs/ojcore', 'knockout', 'jquery','text!../data/restservices.json', 'oj
           self.inputLocationName(null);
         };
 
-        self.handleSelectionChanged = function (event) {
-          console.log("handleSelectionChanged function");
+        self.refreshEmployeeList = function(depId){
+          self.EmpCollection.url = self.EmpsByDeptUrl + depId;
+          self.EmpCollection.fetch();
+          document.getElementById('empDatagrid').refresh();
+        };
+
+
+        self.handleDepSelectionChanged = function (event) {
+          console.log("handleDepSelectionChanged function");
           var selection = event.detail['value'][0];
           if (selection != null) {
             var rowKey = selection['startKey']['row'];
             self.modelToUpdate = self.DepCollection.get(rowKey);
             self.updateFields(self.modelToUpdate);
+
+            //handle emp listing
+            var depId = self.modelToUpdate.get('id');
+            self.refreshEmployeeList(depId);
           }
         };
+
+          self.handleEmpSelectionChanged = function (event) {
+            console.log("handleEmpSelectionChanged function");
+            var selection = event.detail['value'][0];
+            if (selection != null) {
+              var rowKey = selection['startKey']['row'];
+              self.modelToUpdate = self.DepCollection.get(rowKey);
+              self.updateFields(self.modelToUpdate);
+            }
+          };
 
         self.update = function() {
           console.log("update function");
@@ -94,6 +131,7 @@ define(['ojs/ojcore', 'knockout', 'jquery','text!../data/restservices.json', 'oj
           self.modelToUpdate = self.DepCollection.get(self.inputDepartmentID());
           if( self.modelToUpdate){
             self.modelToUpdate.destroy();
+            self.refreshEmployeeList(0);
             console.log("Remove department name: " + self.inputDepartmentName());
           };
           self.resetUpdateFields();
