@@ -29,7 +29,7 @@ define(['ojs/ojcore', 'knockout', 'jquery','text!../data/restservices.json', 'oj
         var retObj = {};
         retObj['type'] = getVerb(operation);
         if (operation === "delete" || operation === "update") {
-          retObj['url'] = self.EmpUrl + "/" + collection.id ; //  serviceURL + operation + "/" + collection.id;
+          retObj['url'] = self.EmpUrl + "/" + collection.id ;
         }
         else {
           //var depId = collection.get('id');
@@ -112,12 +112,13 @@ define(['ojs/ojcore', 'knockout', 'jquery','text!../data/restservices.json', 'oj
         };
 
         self.resetDepFields = function(){
+          console.log("**resetDepFields**");
           self.inputDepartmentID(null);
           self.inputDepartmentName(null);
           self.inputLocationName(null);
         };
 
-        self.resetEmpFields = function (model) {
+        self.resetEmpFields = function () {
           self.inputEmpID(null);
           self.inputEmpLastName(null);
           self.inputEmpFirstName(null);
@@ -126,13 +127,20 @@ define(['ojs/ojcore', 'knockout', 'jquery','text!../data/restservices.json', 'oj
 
         self.refreshEmployeeList = function(depId){
           self.EmpCollection.url = self.EmpsByDeptUrl + depId;
-          self.EmpCollection.fetch();
-          document.getElementById('empDatagrid').refresh();
+          self.EmpCollection.fetch({
+            success: function(model, response, options){
+              self.resetEmpFields();
+              document.getElementById('empDatagrid').refresh();
+            },
+            error: function(model, jqXHR, options){
+              console.log("Error updating emplist: "+ jqXHR);
+            }
+          });
+
         };
 
 
         self.handleDepSelectionChanged = function (event) {
-          console.log("handleDepSelectionChanged function");
           var selection = event.detail['value'][0];
           if (selection != null) {
             var rowKey = selection['startKey']['row'];
@@ -147,7 +155,6 @@ define(['ojs/ojcore', 'knockout', 'jquery','text!../data/restservices.json', 'oj
         };
 
           self.handleEmpSelectionChanged = function (event) {
-            console.log("handleEmpSelectionChanged function");
             var selection = event.detail['value'][0];
             if (selection != null) {
               var rowKey = selection['startKey']['row'];
@@ -157,7 +164,6 @@ define(['ojs/ojcore', 'knockout', 'jquery','text!../data/restservices.json', 'oj
           };
 
         self.updateDep = function() {
-          console.log("update dep function");
           self.modelToUpdate = self.DepCollection.get(self.inputDepartmentID());
           self.modelToUpdate.save(self.buildDepModel(), {
             contentType: 'application/json',
@@ -168,11 +174,9 @@ define(['ojs/ojcore', 'knockout', 'jquery','text!../data/restservices.json', 'oj
               console.log(self.inputDepartmentID + " --- " + jqXHR);
             }
           });
-          console.log("Updated department name: " + self.inputDepartmentName());
         };
 
         self.updateEmp = function() {
-          console.log("update emp function");
           self.modelToUpdate = self.EmpCollection.get(self.inputEmpID());
           self.modelToUpdate.save(self.buildEmpModel(), {
             contentType: 'application/json',
@@ -183,34 +187,36 @@ define(['ojs/ojcore', 'knockout', 'jquery','text!../data/restservices.json', 'oj
               console.log(self.inputEmpID + " --- " + jqXHR);
             }
           });
-          console.log("Updated Employee name: " + self.inputEmpLastName());
         };
 
 
         self.removeDep = function() {
-          console.log("remove function");
           self.modelToUpdate = self.DepCollection.get(self.inputDepartmentID());
           if( self.modelToUpdate){
-            self.modelToUpdate.destroy();
-            self.refreshEmployeeList(0);
-            console.log("Remove department name: " + self.inputDepartmentName());
+            self.modelToUpdate.destroy({
+              success: function(model, response){
+                self.refreshEmployeeList(0);
+              },
+              error: function(jqXHR, textstatus, errorThrown){console.log("Remove ERROR: " + jqXHR);}
+            });
           };
           self.resetDepFields();
-          //$('#datagrid').oj-data-grid('refresh');
+
         };
 
         self.removeEmp = function() {
-          console.log("remove function");
           self.modelToUpdate = self.EmpCollection.get(self.inputEmpID());
           var depID = self.modelToUpdate.get('DEPARTMENT_ID');
           if( self.modelToUpdate){
-            self.modelToUpdate.destroy();
-            self.refreshEmployeeList(depID);
-            console.log("Remove employee name: " + self.inputEmpFirstName());
+            self.modelToUpdate.destroy({
+              success: function(model, response){
+                self.refreshEmployeeList(depID);
+              },
+              error: function(jqXHR, textstatus, errorThrown){console.log("Remove ERROR: " + jqXHR);}
+            });
+            //self.refreshEmployeeList(depID);
           };
-          self.resetEmpFields();
-          //self.refreshEmployeeList();
-          //$('#datagrid').oj-data-grid('refresh');
+          //self.resetEmpFields();
         };
 
 
