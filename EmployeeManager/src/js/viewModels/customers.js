@@ -6,27 +6,67 @@
 /*
  * Your customer ViewModel code goes here
  */
-define(['ojs/ojcore', 'knockout', 'jquery','text!../data/restservices.json', 'ojs/ojdatagrid', 'ojs/ojcollectiondatagriddatasource','ojs/ojinputtext', 'ojs/ojformlayout'],
+define(['ojs/ojcore', 'knockout', 'jquery','text!../data/restservices.json', 'ojs/ojdatagrid', 'ojs/ojcollectiondatagriddatasource','ojs/ojinputtext', 'ojs/ojformlayout', 'ojs/ojmasonrylayout'],
  function(oj, ko, $, restservices) {
 
     function CustomerViewModel() {
       var self = this;
 
       //Set data source endpoint
-      self.url = JSON.parse(restservices).departments;
+      self.DeptUrl = JSON.parse(restservices).departments;
+      self.EmpsByDeptUrl = JSON.parse(restservices).empsByDepartment;
+      self.EmpUrl = JSON.parse(restservices).employees;
 
 
-      self.collection = new oj.Collection(null, {
+      function getVerb(verb) {
+        if (verb === "read")    {return "GET";}
+        if (verb === "update")  {return "PUT";}
+        if (verb === "delete")  {return "DELETE";}
+        if (verb === "create")  {return "PUT"}
+      };
+
+      function empRestURL(operation, collection, options) {
+        var retObj = {};
+        retObj['type'] = getVerb(operation);
+        if (operation === "delete" || operation === "update") {
+          retObj['url'] = self.EmpUrl + "/" + collection.id ;
+        }
+        else {
+          //var depId = collection.get('id');
+          var depId = + self.inputDepartmentID();
+          retObj['url'] = self.EmpsByDeptUrl + depId;
+        }
+        return retObj;
+      };
+
+      //Set collections
+      self.DepCollection = new oj.Collection(null, {
           model: new oj.Model.extend({idAttribute: 'id'}),
-          url: self.url
+          url: self.DeptUrl
+        }
+      );
+      self.EmpCollection = new oj.Collection(null, {
+          model: new oj.Model.extend({idAttribute: 'id', customURL: empRestURL}),
+          customURL: empRestURL
         }
       );
 
-      self.dataSource = new oj.CollectionDataGridDataSource(
-        self.collection, {
+
+      //Set datasources for oj-data-grid
+      self.deptDataSource = new oj.CollectionDataGridDataSource(
+        self.DepCollection, {
           rowHeader: 'id',
           columns:['DEPARTMENT_NAME', 'LOCATION_NAME']
         });
+
+
+      self.empDataSource = new oj.CollectionDataGridDataSource(
+        self.EmpCollection, {
+          rowHeader: 'id',
+          columns:['LAST_NAME', 'FIRST_NAME', 'SALARY']
+        });
+
+
 
         //Set local vars to hold form values
         var nextKey = 121;
@@ -34,8 +74,14 @@ define(['ojs/ojcore', 'knockout', 'jquery','text!../data/restservices.json', 'oj
         self.inputDepartmentName = ko.observable();
         self.inputLocationName = ko.observable();
 
+        self.inputEmpID = ko.observable(0);
+        self.inputEmpLastName = ko.observable();
+        self.inputEmpFirstName = ko.observable();
+        self.inputEmpSalary = ko.observable();
+
+
         //Function that creates json payload from fields in update form
-        self.buildModel = function () {
+        self.buildDepModel = function () {
          return {
            'id': self.inputDepartmentID(),
            'DEPARTMENT_NAME': self.inputDepartmentName(),
@@ -43,40 +89,137 @@ define(['ojs/ojcore', 'knockout', 'jquery','text!../data/restservices.json', 'oj
           };
         };
 
+        self.buildEmpModel = function () {
+         return {
+           'id': self.inputEmpID(),
+           'LAST_NAME': self.inputEmpLastName(),
+           'FIRST_NAME': self.inputEmpFirstName(),
+           'SALARY': self.inputEmpSalary()
+          };
+        };
         // Function to update fields in update form
-        self.updateFields = function (model) {
+        self.updateDepFields = function (model) {
           self.inputDepartmentID(model.get('id'));
           self.inputDepartmentName(model.get('DEPARTMENT_NAME'));
           self.inputLocationName(model.get('LOCATION_NAME'));
         };
 
-        self.handleSelectionChanged = function (event) {
-          console.log("handleSelectionChanged function");
+        self.updateEmpFields = function (model) {
+          self.inputEmpID(model.get('id'));
+          self.inputEmpLastName(model.get('LAST_NAME'));
+          self.inputEmpFirstName(model.get('FIRST_NAME'));
+          self.inputEmpSalary(model.get('SALARY'));
+        };
+
+        self.resetDepFields = function(){
+          console.log("**resetDepFields**");
+          self.inputDepartmentID(null);
+          self.inputDepartmentName(null);
+          self.inputLocationName(null);
+        };
+
+        self.resetEmpFields = function () {
+          self.inputEmpID(null);
+          self.inputEmpLastName(null);
+          self.inputEmpFirstName(null);
+          self.inputEmpSalary(null);
+        };
+
+        self.refreshEmployeeList = function(depId){
+          self.EmpCollection.url = self.EmpsByDeptUrl + depId;
+          self.EmpCollection.fetch({
+            success: function(model, response, options){
+              self.resetEmpFields();
+              document.getElementById('empDatagrid').refresh();
+            },
+            error: function(model, jqXHR, options){
+              console.log("Error updating emplist: "+ jqXHR);
+            }
+          });
+
+        };
+
+
+        self.handleDepSelectionChanged = function (event) {
           var selection = event.detail['value'][0];
           if (selection != null) {
             var rowKey = selection['startKey']['row'];
-            self.modelToUpdate = self.collection.get(rowKey);
-            self.updateFields(self.modelToUpdate);
+            self.modelToUpdate = self.DepCollection.get(rowKey);
+            self.updateDepFields(self.modelToUpdate);
+
+            //handle emp listing
+            var depId = self.modelToUpdate.get('id');
+            self.refreshEmployeeList(depId);
+            self.resetEmpFields();
           }
         };
 
-        self.update = function() {
-          console.log("update function");
-          //if (self.modelToUpdate) {
-          //  self.modelToUpdate.set(self.buildModel());
-            self.modelToUpdate = self.collection.get(self.inputDepartmentID());
-            self.modelToUpdate.save(self.buildModel(), {
-              contentType: 'application/json',
-              success: function(model, response) {
-                console.log(self.inputDepartmentID() + " -- updated successfully")
-              },
-              error: function(jqXHR, textstatus, errorThrown) {
-                console.log(self.inputDepartmentID + " --- " + jqXHR);
-              }
-            });
-          //};
-          console.log("New department name: " + self.inputDepartmentName());
+          self.handleEmpSelectionChanged = function (event) {
+            var selection = event.detail['value'][0];
+            if (selection != null) {
+              var rowKey = selection['startKey']['row'];
+              self.modelToUpdate = self.EmpCollection.get(rowKey);
+              self.updateEmpFields(self.modelToUpdate);
+            }
+          };
+
+        self.updateDep = function() {
+          self.modelToUpdate = self.DepCollection.get(self.inputDepartmentID());
+          self.modelToUpdate.save(self.buildDepModel(), {
+            contentType: 'application/json',
+            success: function(model, response) {
+              console.log(self.inputDepartmentID() + " -- updated successfully")
+            },
+            error: function(jqXHR, textstatus, errorThrown) {
+              console.log(self.inputDepartmentID + " --- " + jqXHR);
+            }
+          });
         };
+
+        self.updateEmp = function() {
+          self.modelToUpdate = self.EmpCollection.get(self.inputEmpID());
+          self.modelToUpdate.save(self.buildEmpModel(), {
+            contentType: 'application/json',
+            success: function(model, response) {
+              console.log(self.inputEmpID() + " -- updated successfully")
+            },
+            error: function(jqXHR, textstatus, errorThrown) {
+              console.log(self.inputEmpID + " --- " + jqXHR);
+            }
+          });
+        };
+
+
+        self.removeDep = function() {
+          self.modelToUpdate = self.DepCollection.get(self.inputDepartmentID());
+          if( self.modelToUpdate){
+            self.modelToUpdate.destroy({
+              success: function(model, response){
+                self.refreshEmployeeList(0);
+              },
+              error: function(jqXHR, textstatus, errorThrown){console.log("Remove ERROR: " + jqXHR);}
+            });
+          };
+          self.resetDepFields();
+
+        };
+
+        self.removeEmp = function() {
+          self.modelToUpdate = self.EmpCollection.get(self.inputEmpID());
+          var depID = self.modelToUpdate.get('DEPARTMENT_ID');
+          if( self.modelToUpdate){
+            self.modelToUpdate.destroy({
+              success: function(model, response){
+                self.refreshEmployeeList(depID);
+              },
+              error: function(jqXHR, textstatus, errorThrown){console.log("Remove ERROR: " + jqXHR);}
+            });
+            //self.refreshEmployeeList(depID);
+          };
+          //self.resetEmpFields();
+        };
+
+
       // Below are a set of the ViewModel methods invoked by the oj-module component.
       // Please reference the oj-module jsDoc for additional information.
 
