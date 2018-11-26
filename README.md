@@ -1,6 +1,6 @@
 # Workshop: Web Component Development with Oracle JET
 
-The purpose of this script is to show how to put together a CRUD scenario in an Oracle JET application by means of Web Components. You'll start by setting up [JSON Server, which is a fake REST server](https://scotch.io/tutorials/json-server-as-a-fake-rest-api-in-frontend-development), next you'll set up an Oracle JET application that connects to it and displays its payload, and finally you'll use the Composite Component Architecture (CCA) to create a reusable Web Component for displaying the payload in different modules, interacting with CRUD functionality defined in the application.
+The purpose of this script is to show how to put together a CRUD scenario in an Oracle JET application by means of Web Components. You'll start by setting up [JSON Server, which is a fake REST server](https://scotch.io/tutorials/json-server-as-a-fake-rest-api-in-frontend-development), next you'll set up an Oracle JET application that connects to it and displays its payload, and finally you add functionality for interacting with CRUD functionality defined in the application.
 
 **Tip:** Go here to follow a free three week MOOC about Oracle JET: [oracle.com/goto/jet](https://www.oracle.com/goto/jet).
 
@@ -24,15 +24,11 @@ Part 2: Simple Usage of Oracle JET
    * Showing Data in an Oracle JET Grid
    * Displaying the Selected Data in an Oracle JET Form
 
-Part 3: Smart Usage of Oracle JET
-   * Creating a Web Component
-   * Creating a Nested Web Component
+Part 3: CRUD and Master Detail using Oracle JET
    * Creating CRUD Functionality
-   
-Part 4: Advanced Usage of Oracle JET   
-   * Centralized Data Management
-   * Filtering
-   * Internationalization
+
+Part 4: Optional
+   * Pop up edit windows
 
 ## Part 1: Set Up the Environment
 
@@ -62,17 +58,17 @@ npm install -g json-server
 Details: https://github.com/typicode/json-server
 
    2. Download and put this file anywhere on disk:
-   
+
 https://raw.githubusercontent.com/geertjanw/ojet-training/master/employeeData.json
 
 **Tip:** Do not put the above file in an Oracle JET application, instead, put it somewhere completely separate, e.g., on your Desktop, and run the command below in the Terminal window from the location of the employeeData.json file.
 
-   3. Run in the Terminal window: 
+   3. Run in the Terminal window:
 ```js #button { border: none; }
 json-server --watch employeeData.json
 ```
    4. Go to http://localhost:3000/employees and see your data via your fake REST endpoint:
-   
+
 <table><tr><td>   
 <img src="Screen%20Shot%202018-06-21%20at%2015.15.15.png" alt="alt text" width="400" height="250">
 </td></tr></table>
@@ -116,11 +112,11 @@ Oracle JET Command Line Interface, version: 6.0.0
 **Tip:** If you have a different version of the Oracle JET command-line interface, please reinstall, using the command in step 1 above to do so.
 
 You are now ready to get started with Oracle JET!
-            
+
 ## Part 2: Simple Usage of Oracle JET
 
 In this part, you set up a new Oracle JET application, explore the Oracle JET Cookbook, and set up a grid and form that display the data published in the previous part.
-   
+
 ### (a) Creating an Oracle JET Application
 
 1. Run the following in the terminal:
@@ -161,13 +157,13 @@ In the above, look at the JS documentation, the description, variations, etc.
 2. Here is a simple ojDataGrid, a simplified version of the above references. Copy it below and paste it into the 'dashboard.html' file in your application (make sure you are editing only files under /src directory):
 
 ```html #button { border: none; }
-<oj-data-grid 
-     id="datagrid" 
-     style="height:200px; max-width:477px" 
-     data="[[dataSource]]" 
-     selection-mode.row="single" 
-     dnd.reorder.row="enable" 
-     header.column.style="width:100px" > 
+<oj-data-grid
+     id="datagrid"
+     style="height:200px; max-width:477px"
+     data="[[dataSource]]"
+     selection-mode.row="single"
+     dnd.reorder.row="enable"
+     header.column.style="width:100px" >
 </oj-data-grid>
 ```
 
@@ -215,7 +211,7 @@ self.dataSource = new oj.CollectionDataGridDataSource(
 **Note:** Be aware that the order in which the parameters are listed in the dependency list passed into the define() call must match the order in which they are referenced in the callback function, i.e., 'text!../endpoints.json' is 4th in the list in the dependency list passed into the define() call and therefore its reference 'endpoints' must be 4th in the list in the callback function, as shown below:
 
 ```js #button { border: none; }
-define(['ojs/ojcore', 'knockout', 'jquery', 'text!../endpoints.json', 
+define(['ojs/ojcore', 'knockout', 'jquery', 'text!../endpoints.json',
     'ojs/ojdatagrid', 'ojs/ojcollectiondatagriddatasource'],
         function (oj, ko, $, endpoints) {
 ```
@@ -272,7 +268,7 @@ self.updateFields = function (model) {
 ```js #button { border: none; }
 self.handleSelectionChanged = function (event) {
      var selection = event.detail['value'][0];
-     if (selection != null) { 
+     if (selection != null) {
          var rowKey = selection['startKey']['row'];
          self.modelToUpdate = self.collection.get(rowKey);
          self.updateFields(self.modelToUpdate);
@@ -289,12 +285,12 @@ on-selection-changed="[[handleSelectionChanged]]"
 5. Display the values of the selected row in the table via the form below, add it below the grid in 'dashboard.html':
 
 ```html #button { border: none; }
-<oj-form-layout id="form-container" label-edge="top"> 
-    <oj-input-text id="firstNameInput" label-hint="First Name" value="[[inputFirstName]]"></oj-input-text> 
-    <oj-input-text id="lastNameInput" label-hint="Last Name" value="[[inputLastName]]"></oj-input-text> 
-    <oj-input-text id="inputHireDate" label-hint="Date Hired" value="[[inputHireDate]]"></oj-input-text> 
-    <oj-input-text id="inputSalary" label-hint="Salary" value="[[inputSalary]]"></oj-input-text> 
-</oj-form-layout> 
+<oj-form-layout id="form-container" label-edge="top">
+    <oj-input-text id="firstNameInput" label-hint="First Name" value="[[inputFirstName]]"></oj-input-text>
+    <oj-input-text id="lastNameInput" label-hint="Last Name" value="[[inputLastName]]"></oj-input-text>
+    <oj-input-text id="inputHireDate" label-hint="Date Hired" value="[[inputHireDate]]"></oj-input-text>
+    <oj-input-text id="inputSalary" label-hint="Salary" value="[[inputSalary]]"></oj-input-text>
+</oj-form-layout>
 ```
 
 6. To use the 'ojInputText' and 'ojDialog', reference the following at the end of the dependency list passed into the define() call of the 'dashboard.js' file:
@@ -308,10 +304,10 @@ on-selection-changed="[[handleSelectionChanged]]"
 <table><tr><td>   
 <img src="Screen%20Shot%202018-06-21%20at%2016.02.46.png" alt="alt text" width="400" height="250">
 </td></tr></table>
-   
+
 ## Part 3: Smart Usage of Oracle JET
 
-In this part, you create a reusable Web Component that follows the W3C Web Component specification. 
+In this part, you create a reusable Web Component that follows the W3C Web Component specification.
 
 ### (a) Creating a Web Component
 
@@ -334,24 +330,24 @@ Take a look at your source structure, find the new 'my-employee-form' Web Compon
 3. Load the loader, i.e., 'my-employee-form/loader', at the end of the dependency list passed into the define() call of the 'dashboard.js', as shown below:
 
 ```js #button { border: none; }
-define(['ojs/ojcore', 'knockout', 'jquery', 
+define(['ojs/ojcore', 'knockout', 'jquery',
     'text!../endpoints.json',
-    'ojs/ojdatagrid', 
+    'ojs/ojdatagrid',
     'ojs/ojcollectiondatagriddatasource',
-    'ojs/ojinputtext', 
-    'ojs/ojformlayout', 
+    'ojs/ojinputtext',
+    'ojs/ojformlayout',
     'my-employee-form/loader']
 ```
 
 4. Move the form-container (from step 5 in the previous section) into the 'my-employee-form-view.html' file of the 'my-employee-form' Web Component:
 
 ```html #button { border: none; }
-<oj-form-layout id="form-container" label-edge="top"> 
-    <oj-input-text id="firstNameInput" label-hint="First Name" value="[[inputFirstName]]"></oj-input-text> 
-    <oj-input-text id="lastNameInput" label-hint="Last Name" value="[[inputLastName]]"></oj-input-text> 
-    <oj-input-text id="inputHireDate" label-hint="Date Hired" value="[[inputHireDate]]"></oj-input-text> 
-    <oj-input-text id="inputSalary" label-hint="Salary" value="[[inputSalary]]"></oj-input-text> 
-</oj-form-layout> 
+<oj-form-layout id="form-container" label-edge="top">
+    <oj-input-text id="firstNameInput" label-hint="First Name" value="[[inputFirstName]]"></oj-input-text>
+    <oj-input-text id="lastNameInput" label-hint="Last Name" value="[[inputLastName]]"></oj-input-text>
+    <oj-input-text id="inputHireDate" label-hint="Date Hired" value="[[inputHireDate]]"></oj-input-text>
+    <oj-input-text id="inputSalary" label-hint="Salary" value="[[inputSalary]]"></oj-input-text>
+</oj-form-layout>
 ```
 
 5. Move the references to 'ojs/ojinputtext' and 'ojs/ojformlayout' from the end of the dependency list passed into the define() call of the 'dashboard.js' file to the end of the dependency list passed into the define() call of the 'my-employee-form-viewModel.js' file.
@@ -378,10 +374,10 @@ define(['ojs/ojcore', 'knockout', 'jquery',
 7. Back in the 'my-employee-form-view.html', reference the properties above via the '$props' construction:
 
 ```html #button { border: none; }
-<oj-input-text id="firstNameInput" label-hint="First Name" value="[[$props.firstName]]"></oj-input-text> 
-<oj-input-text id="lastNameInput" label-hint="Last Name" value="[[$props.lastName]]"></oj-input-text> 
-<oj-input-text id="inputHireDate" label-hint="Date Hired" value="[[$props.hireDate]]"></oj-input-text> 
-<oj-input-text id="inputSalary" label-hint="Salary" value="[[$props.salary]]"></oj-input-text> 
+<oj-input-text id="firstNameInput" label-hint="First Name" value="[[$props.firstName]]"></oj-input-text>
+<oj-input-text id="lastNameInput" label-hint="Last Name" value="[[$props.lastName]]"></oj-input-text>
+<oj-input-text id="inputHireDate" label-hint="Date Hired" value="[[$props.hireDate]]"></oj-input-text>
+<oj-input-text id="inputSalary" label-hint="Salary" value="[[$props.salary]]"></oj-input-text>
 ```
 
 **Tip:** What is "$props"? Use ''$props'' to reference properties that need to be visualized in the view of Web Components.
@@ -442,16 +438,16 @@ $.getJSON("http://localhost:3000/employees").
 ```
 Next, display the Web Component for each of the 'employees', in 'incidents.html':
 ```html #button { border: none; }
-<oj-bind-for-each data="[[employees]]"> 
-      <template> 
-             <my-employee-form 
-                  first-name="[[$current.data.name]]" 
-                  last-name="[[$current.data.lastname]]" 
-                  hire-date="[[$current.data.hiredate]]" 
-                  hire-salary="[[$current.data.salary]]"> 
-             </my-employee-form> 
-             <hr/> 
-       </template> 
+<oj-bind-for-each data="[[employees]]">
+      <template>
+             <my-employee-form
+                  first-name="[[$current.data.name]]"
+                  last-name="[[$current.data.lastname]]"
+                  hire-date="[[$current.data.hiredate]]"
+                  hire-salary="[[$current.data.salary]]">
+             </my-employee-form>
+             <hr/>
+       </template>
 </oj-bind-for-each>
 ```
 
@@ -477,7 +473,7 @@ ojet create component my-employee-form-container
     * load the 'loader.js' file from the 'my-employee-form' component in the ViewModel of the 'my-employee-form-container' component, i.e., into the 'my-employee-form-container-viewModel.js', and note that you can now remove the reference to it from the 'incidents.js' file
    * add a property named 'data' of type 'array' to the 'component.json' file of the 'my-employee-form-container' component
    * move the View code from the module, i.e., from the 'incidents.html' file, into the 'my-employee-form-container-view.html' file and make sure to reference the 'data' property as '[[$props.data]]', instead of '[[employees]]'
-   
+
 5. Use the new custom element, i.e., 'my-employee-form-container', as follows in 'incidents.html':
 
 ```html #button { border: none; }
@@ -490,21 +486,21 @@ Start the 'ojet serve' process again and note that you are now using a nested We
 
 ```html #button { border: none; }
 <oj-bind-for-each data="[[$props.data]]">
-    <template> 
+    <template>
         <oj-collapsible>
             <span slot="header">
                 <span>
                     <oj-bind-text value="[[$current.data.empno]]"></oj-bind-text>
                 </span>
             </span>
-            <my-employee-form 
-                first-name="[[$current.data.name]]" 
-                last-name="[[$current.data.lastname]]" 
-                hire-date="[[$current.data.hiredate]]" 
-                hire-salary="[[$current.data.hiresalary]]"> 
+            <my-employee-form
+                first-name="[[$current.data.name]]"
+                last-name="[[$current.data.lastname]]"
+                hire-date="[[$current.data.hiredate]]"
+                hire-salary="[[$current.data.hiresalary]]">
             </my-employee-form>
         </oj-collapsible>
-        <hr/> 
+        <hr/>
     </template>
 </oj-bind-for-each>
 ```
@@ -530,21 +526,21 @@ We're going to create a 'slot' (i.e., a placeholder) in the 'my-employee-form' W
 ```
 
    2. In 'my-employee-form-view.html', i.e., in the 'my-employee-form' Web Component, define where the slot will be rendered, e.g., below the form paste the following:
-   
+
 ```html #button { border: none; }   
 <div>
    <oj-slot name="toolbar"/>
 </div>
 ```
    3. In 'my-employee-form-view.js', add a reference to the ojs/ojbutton module to the end of the dependency list passed into a define() call:
-   
+
 ```js #button { border: none; }   
-define(['ojs/ojcore', 'knockout', 'jquery', 
+define(['ojs/ojcore', 'knockout', 'jquery',
     'text!../endpoints.json',
-    'ojs/ojdatagrid', 
+    'ojs/ojdatagrid',
     'ojs/ojcollectiondatagriddatasource',
-    'ojs/ojinputtext', 
-    'ojs/ojformlayout', 
+    'ojs/ojinputtext',
+    'ojs/ojformlayout',
     'my-employee-form/loader',
     'ojs/ojbutton']
 ```
@@ -557,7 +553,7 @@ We now have a slot for a toolbar and, in the Dashboard module, we'll add functio
 The syntax introduced below is based on the [Backbone 'save' construction](http://backbonejs.org/#Model-save).
 
  1. Add a function to 'dashboard.js' for updating items:
-   
+
 ```js #button { border: none; }  
 self.update = function () {
     self.empl = self.collection.get(self.inputEmployeeID());
@@ -574,7 +570,7 @@ self.update = function () {
 ```
 
  2. In 'dashboard.html', change the 'my-employee-form' usage to add a button into the 'toolbar' slot and to enable the 'update' function to be invoked when the button is clicked:
- 
+
  ```html #button { border: none; }   
  <my-employee-form
     first-name='[[inputFirstName]]'
@@ -625,8 +621,8 @@ Change the square braces in the view of the 'my-employee-form' component to curl
 </oj-form-layout>
 ```
 
-Next, change the bindings in the 'my-employee-form' custom element, from square braces to curly braces, for each of the attributes, because now we want to change the underlying properties, instead of simply displaying their current values: 
- 
+Next, change the bindings in the 'my-employee-form' custom element, from square braces to curly braces, for each of the attributes, because now we want to change the underlying properties, instead of simply displaying their current values:
+
  ```html #button { border: none; }   
  <my-employee-form
     first-name='{{inputFirstName}}'
@@ -646,7 +642,7 @@ Next, change the bindings in the 'my-employee-form' custom element, from square 
 The syntax introduced below is based on the [Backbone 'remove' construction](http://backbonejs.org/#Collection-remove) and the [Backbone 'destroy' construction](http://backbonejs.org/#Model-destroy).
 
  1. Add a function to 'dashboard.js' for removing the current item:
-   
+
 ```js #button { border: none; }  
 self.remove = function () {
     self.modelToUpdate = self.collection.remove(self.buildModel());
@@ -675,7 +671,7 @@ self.remove = function () {
 The syntax introduced below is based on the [Backbone 'create' construction](http://backbonejs.org/#Collection-create).
 
    1. Add a function to 'dashboard.js' for creating new items:
-   
+
 ```js #button { border: none; }   
 self.create = function (event) {
     if (self.inputEmployeeID(nextKey) < nextKey) {
@@ -731,7 +727,7 @@ define(['ojs/ojcore', 'text!../endpoints.json'], function (oj, endpoints) {
         // Create a single employee instance:
         createEmployeeModel: function () {
             var Employee = oj.Model.extend({
-                urlRoot: this.resourceUrl, 
+                urlRoot: this.resourceUrl,
                 idAttribute: "id"
             });
             return new Employee();
@@ -739,7 +735,7 @@ define(['ojs/ojcore', 'text!../endpoints.json'], function (oj, endpoints) {
         // Create a employee collection:
         createEmployeeCollection: function () {
             var Employees = oj.Collection.extend({
-                url: this.resourceUrl, 
+                url: this.resourceUrl,
                 model: this.createEmployeeModel()
             });
             return new Employees();
@@ -776,7 +772,7 @@ Once you have an observable array, such as 'employees' above, you can use it as 
 
 ```html #button { border: none; }   
 <oj-bind-for-each data='[[employees]]'>
-    <template> 
+    <template>
         <oj-collapsible>
             <span slot="header">
                 <span>
@@ -789,7 +785,7 @@ Once you have an observable array, such as 'employees' above, you can use it as 
                 <h3><oj-bind-text value="[[$current.data.HIRE_DATE]]"></oj-bind-text></h3>
             </span>
         </oj-collapsible>
-        <hr/> 
+        <hr/>
     </template>
 </oj-bind-for-each>
 ```
@@ -807,9 +803,9 @@ In the view, e.g., 'incidents.html', add an input field that visualizes the filt
 
 ```html #button { border: none; }   
 <oj-input-text  
-       maxlength="30" 
-       placeholder="Type to filter first name" 
-       on-raw-value-changed="[[filterChanged]]" 
+       maxlength="30"
+       placeholder="Type to filter first name"
+       on-raw-value-changed="[[filterChanged]]"
        value="{{filter}}">
 </oj-input-text>
 ```
@@ -828,8 +824,8 @@ self.filterChanged = function (event) {
     if (self.originalCollection == undefined && filter !== undefined) {
         self.originalCollection = filteredCollection.clone();
     }
-    var ret = 
-        self.originalCollection !== undefined ? 
+    var ret =
+        self.originalCollection !== undefined ?
         self.originalCollection.where({FIRST_NAME: {value: filter, comparator: self.nameFilter}}) : [];
     if (ret.length == 0) {
         while (!filteredCollection.isEmpty()) {
@@ -894,7 +890,7 @@ Notice that we're dispatching an event, which can be finetuned further, so the m
 
 #### (b) Adding Translation Bundles
 
-1. In 'src/js', add a new folder named 'resources'. 
+1. In 'src/js', add a new folder named 'resources'.
 
 2. In the 'resources' folder, create a folder named 'nls', containing 'l10.js', which is a file with this content:
 
@@ -997,7 +993,7 @@ document.dispatchEvent(new CustomEvent('localeListener', params));
 ```js #button { border: none; }
 document.addEventListener("localeListener", function (event) {
     console.log('EventValue: ' + event.detail.message);
-}); 
+});
 ```
 
 This is a very powerful way of using event based programming.
@@ -1023,6 +1019,3 @@ More details relating to this: https://javascript.info/bubbling-and-capturing
 4. Experiment with other components in the Oracle JET Cookbook and see what they look like in Arabic:
 
 http://www.oracle.com/webfolder/technetwork/jet/jetCookbook.html
-
-
-
