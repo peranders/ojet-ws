@@ -32,7 +32,6 @@ define(['ojs/ojcore', 'knockout', 'jquery','text!../data/restservices.json', 'oj
           retObj['url'] = self.EmpUrl + "/" + collection.id ;
         }
         else {
-          //var depId = collection.get('id');
           var depId = + self.inputDepartmentID();
           retObj['url'] = self.EmpsByDeptUrl + depId;
         }
