@@ -143,7 +143,7 @@ ojet serve
 After a few moments, you should see this:
 
 <table><tr><td>   
-<img src="Screen%20Shot%202018-06-21%20at%2015.37.46.png" alt="alt text" width="400" height="250">
+<img src="images/ojetServe.png" alt="alt text" width="400" height="250">
 </td></tr></table>
 
 3. In your editor, open the sources, explore the structure, and learn about what everything does.
@@ -205,7 +205,7 @@ self.dataSource = new oj.CollectionDataGridDataSource(
 5. Save your changes. In your application, you should now see this:
 
 <table><tr><td>   
-<img src="Screen%20Shot%202018-06-21%20at%2015.50.55.png" alt="alt text" width="400" height="250">
+<img src="images/empList.png" alt="alt text" width="400" height="250">
 </td></tr></table>
 
 **Tip:** Optionally, for centralized management of your endpoints, create an 'endpoints.json' file in your 'src/js' folder, load it in the dependency list passed into the define() call as 'text!../endpoints.json', reference it as 'endpoints' in the callback function, and then replace hardcoded references to http://localhost:3000/employees with 'JSON.parse(endpoints).employees', assuming the file's content is as follows:
