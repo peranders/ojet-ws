@@ -58,22 +58,31 @@ npm install -g json-server
 Details: https://github.com/typicode/json-server
 
    2. Download and put this file anywhere on disk:
-
-https://raw.githubusercontent.com/geertjanw/ojet-training/master/employeeData.json
+https://raw.githubusercontent.com/peranders/ojet-ws/master/DepEmpData.json
 
 **Tip:** Do not put the above file in an Oracle JET application, instead, put it somewhere completely separate, e.g., on your Desktop, and run the command below in the Terminal window from the location of the employeeData.json file.
 
    3. Run in the Terminal window:
 ```js #button { border: none; }
-json-server --watch employeeData.json
+json-server --watch DepEmpData.json
 ```
-   4. Go to http://localhost:3000/employees and see your data via your fake REST endpoint:
+
+      You should see something like this:
+      <table><tr><td>   
+      <img src="images/jsonServerStart.png" alt="alt text" width="400" height="250">
+      </td></tr></table>
+
+   4. Go to http://localhost:3000/employees and see your employee data via your fake REST endpoint:
 
 <table><tr><td>   
-<img src="Screen%20Shot%202018-06-21%20at%2015.15.15.png" alt="alt text" width="400" height="250">
+<img src="images/employees.png" alt="alt text" width="400" height="250">
 </td></tr></table>
 
-**Tip:** Optionally, follow the steps at http://bit.ly/jet-api to use Oracle Apiary, which is a part of Oracle API Platform Cloud Service, to design an API. Name your new API Project *employees*, copy the content from https://github.com/geertjanw/ojet-training/blob/master/employeeData.json, and following the instructions, your *get* API should be something like http://private-cdb8cc-employees3.apiary-mock.com/questions. The JavaScript code to be integrated in the instructions that follow, is also provided, as explained at http://bit.ly/jet-api. Make sure to use the Mock Server, as explained at http://bit.ly/jet-api, which will give you the same functionality as provided by the [JSON Server](https://scotch.io/tutorials/json-server-as-a-fake-rest-api-in-frontend-development).
+Try the same thing with http://localhost:3000/departments
+
+Json server also support a lot of other variants like: http://localhost:3000/employees?DEPARTMENT_ID=90 that only shows employees in the given department.
+
+**Tip:** Optionally, follow the steps at http://bit.ly/jet-api to use Oracle Apiary, which is a part of Oracle API Platform Cloud Service, to design an API. Name your new API Project *employees*, copy the content from https://github.com/peranders/ojet-ws/blob/master/DepEmpData.json, and follow the instructions. Apiary comes with a mock server which will give you the same functionality as provided by the [JSON Server](https://scotch.io/tutorials/json-server-as-a-fake-rest-api-in-frontend-development).
 
 ### (c) Getting Oracle JET
 
@@ -94,7 +103,7 @@ ojet help
 You should see this:
 
 <table><tr><td>   
-<img src="Screen%20Shot%202018-06-22%20at%2022.47.54.png" alt="alt text" width="400" height="250">
+<img src="images/ojetHelp.png" alt="alt text" width="400" height="250">
 </td></tr></table>
 
 3. Run the following to check that you have the correct version of Oracle JET:
