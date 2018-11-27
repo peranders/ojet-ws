@@ -208,7 +208,7 @@ self.dataSource = new oj.CollectionDataGridDataSource(
 <img src="images/empList.png" alt="alt text" width="400" height="250">
 </td></tr></table>
 
-**Tip:** Optionally, for centralized management of your endpoints, create an 'endpoints.json' file in your 'src/js' folder, load it in the dependency list passed into the define() call as 'text!../endpoints.json', reference it as 'endpoints' in the callback function, and then replace hardcoded references to http://localhost:3000/employees with 'JSON.parse(endpoints).employees', assuming the file's content is as follows:
+**Tip:** Optionally, for centralized management of your endpoints, create a new folder under your src/js folder called 'data'.  Then create a new file called 'restservices.json' in that folder. Load it in the dependency list passed into the define() call as 'text!../data/restservices.json', reference it as 'restservices' in the callback function, and then replace hardcoded references to http://localhost:3000/employees with 'JSON.parse(endpoints).employees', assuming the file's content is as follows:
 
 ```js #button { border: none; }
 {
@@ -216,12 +216,12 @@ self.dataSource = new oj.CollectionDataGridDataSource(
 }
 ```
 
-**Note:** Be aware that the order in which the parameters are listed in the dependency list passed into the define() call must match the order in which they are referenced in the callback function, i.e., 'text!../endpoints.json' is 4th in the list in the dependency list passed into the define() call and therefore its reference 'endpoints' must be 4th in the list in the callback function, as shown below:
+**Note:** Be aware that the order in which the parameters are listed in the dependency list passed into the define() call must match the order in which they are referenced in the callback function, i.e., 'text!../data/restservices.json' is 4th in the list in the dependency list passed into the define() call and therefore its reference 'endpoints' must be 4th in the list in the callback function, as shown below:
 
 ```js #button { border: none; }
-define(['ojs/ojcore', 'knockout', 'jquery', 'text!../endpoints.json',
+define(['ojs/ojcore', 'knockout', 'jquery', 'text!../data/restservices.json',
     'ojs/ojdatagrid', 'ojs/ojcollectiondatagriddatasource'],
-        function (oj, ko, $, endpoints) {
+        function (oj, ko, $, restservices) {
 ```
 
 What does 'text!' mean? That's the protocol defined by https://github.com/requirejs/text, which is part of Oracle JET, used for loading text resources, such as 'endpoints.json'.
@@ -233,10 +233,10 @@ After adding new files, first kill the 'ojet' process in the Terminal window, us
 In this section, you'll add a form that will display the values of the currently selected row, as shown here:
 
 <table><tr><td>   
-<img src="Screen%20Shot%202018-06-21%20at%2016.02.46.png" alt="alt text" width="400" height="250">
+<img src="images/empForm.png" alt="alt text" width="400" height="400">
 </td></tr></table>
 
-1. Add properties, using [Knockout observables](http://knockoutjs.com/documentation/observables.html), to the 'dashboard.js' file:
+1. Add properties, using [Knockout observables](http://knockoutjs.com/documentation/observables.html), to the 'dashboard.js' file after your datasource statements:
 
 ```js #button { border: none; }
 var nextKey = 121;
@@ -310,7 +310,7 @@ on-selection-changed="[[handleSelectionChanged]]"
 7. In your application, you should now see this, i.e., when a row is selected its values should be visible in the form:
 
 <table><tr><td>   
-<img src="Screen%20Shot%202018-06-21%20at%2016.02.46.png" alt="alt text" width="400" height="250">
+<img src="images/empForm.png" alt="alt text" width="400" height="250">
 </td></tr></table>
 
 ## Part 3: Smart Usage of Oracle JET
