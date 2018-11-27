@@ -74,7 +74,7 @@ You should see something like this:
    4. Go to http://localhost:3000/employees and see your employee data via your fake REST endpoint:
 
 <table><tr><td>   
-<img src="images/employees.png" alt="alt text" width="400" height="250">
+<img src="images/employees.png" alt="alt text" width="250" height="250">
 </td></tr></table>
 
 Try the same thing with http://localhost:3000/departments
