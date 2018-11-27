@@ -1,4 +1,4 @@
-# Workshop: Web Component Development with Oracle JET
+# Workshop: Master Detail CRUD Workshop with Oracle JET
 
 The purpose of this script is to show how to put together a CRUD scenario in an Oracle JET application by means of Web Components. You'll start by setting up [JSON Server, which is a fake REST server](https://scotch.io/tutorials/json-server-as-a-fake-rest-api-in-frontend-development), next you'll set up an Oracle JET application that connects to it and displays its payload, and finally you add functionality for interacting with CRUD functionality defined in the application.
 
@@ -66,8 +66,7 @@ https://raw.githubusercontent.com/peranders/ojet-ws/master/DepEmpData.json
 ```js #button { border: none; }
 json-server --watch DepEmpData.json
 ```
-
-      You should see something like this:
+You should see something like this:
       <table><tr><td>   
       <img src="images/jsonServerStart.png" alt="alt text" width="400" height="250">
       </td></tr></table>
