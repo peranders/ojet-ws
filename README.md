@@ -483,20 +483,16 @@ Refresh teh page.  Your app should look like this:
 </td></tr></table>
 
 
-Next thing is to add buttons for deleting and updating Departments.  We start by adding the buttons for these action on the page.  Add the following code after  "<!-- Copy Buttons section here -->" in customers.html:
+Next thing is to add buttons for deleting and updating Departments.  We start by adding the buttons for these action on the page.  Add the following code after  "Copy Buttons section here" comment in customers.html:
 ```js #button { border: none; }
 <div class="oj-form-control-group"
                    aria-label="submit group" role="group">
-                  <!--oj-button id="addbutton" data-bind="click: add">Add</oj-button-->
                   <oj-button id="updateButton" data-bind="click: updateDep">Update</oj-button>
                   <oj-button id="removeButton" data-bind="click: removeDep">Remove</oj-button>
-                <!--
-                  <oj-button id="resetFields" data-bind="click: resetFields">Reset Fields</oj-button>
-                -->
 </div>
 ```
 
-Now we need to add the functions for the update actions in customers.js.  Add the following code in customers.js after handleDepSelectionChanged() function:
+Now we need to add the functions for the update and remove actions in customers.js.  Add the following code in customers.js after handleDepSelectionChanged() function:
 
 ```js #button { border: none; }
 self.updateDep = function() {
@@ -550,6 +546,136 @@ self.resetDepFields = function(){
   self.inputLocationName(null);
 };
 ```
+
+You should now see update and remove buttons below the form.  Try to remove and update some departments.
+
+
+We are now going to add a list of employees for each department.  For this we need to modify the rest URLs used by the collection objects so we start by adding the following function on top of customer.js after the endpoint definitions:
+```js #button { border: none; }
+function getVerb(verb) {
+  if (verb === "read")    {return "GET";}
+  if (verb === "update")  {return "PUT";}
+  if (verb === "delete")  {return "DELETE";}
+  if (verb === "create")  {return "PUT"}
+};
+
+function empRestURL(operation, collection, options) {
+  var retObj = {};
+  retObj['type'] = getVerb(operation);
+  if (operation === "delete" || operation === "update") {
+    retObj['url'] = self.EmpUrl + "/" + collection.id ;
+  }
+  else {
+    var depId = + self.inputDepartmentID();
+    retObj['url'] = self.EmpsByDeptUrl + depId;
+  }
+  return retObj;
+};
+```
+
+After self.deptDataSource definition add the following lines to handle the Employee collection:
+```js #button { border: none; }
+self.EmpCollection = new oj.Collection(null, {
+    model: new oj.Model.extend({idAttribute: 'id', customURL: empRestURL}),
+    customURL: empRestURL
+  }
+);
+
+self.empDataSource = new oj.CollectionDataGridDataSource(
+  self.EmpCollection, {
+    rowHeader: 'id',
+    columns:['LAST_NAME', 'FIRST_NAME', 'SALARY']
+  });
+```
+Add the following variables to hold the form fields for employees. You can add them in the top after the corresponding variables for Department:
+```js #button { border: none; }
+self.inputEmpID = ko.observable(0);
+self.inputEmpLastName = ko.observable();
+self.inputEmpFirstName = ko.observable();
+self.inputEmpSalary = ko.observable();
+```
+
+The following functions are equivalent to the corresponding functions for handling Department. Paste the following code after self.removeDep function definition:
+```js #button { border: none; }
+self.buildEmpModel = function () {
+ return {
+   'id': self.inputEmpID(),
+   'LAST_NAME': self.inputEmpLastName(),
+   'FIRST_NAME': self.inputEmpFirstName(),
+   'SALARY': self.inputEmpSalary()
+  };
+};
+
+self.updateEmpFields = function (model) {
+  self.inputEmpID(model.get('id'));
+  self.inputEmpLastName(model.get('LAST_NAME'));
+  self.inputEmpFirstName(model.get('FIRST_NAME'));
+  self.inputEmpSalary(model.get('SALARY'));
+};
+
+self.resetEmpFields = function () {
+  self.inputEmpID(null);
+  self.inputEmpLastName(null);
+  self.inputEmpFirstName(null);
+  self.inputEmpSalary(null);
+};
+
+self.refreshEmployeeList = function(depId){
+  self.EmpCollection.url = self.EmpsByDeptUrl + depId;
+  self.EmpCollection.fetch({
+    success: function(model, response, options){
+      self.resetEmpFields();
+      document.getElementById('empDatagrid').refresh();
+    },
+    error: function(model, jqXHR, options){
+      console.log("Error updating emplist: "+ jqXHR);
+    }
+  });
+
+};
+
+
+self.handleEmpSelectionChanged = function (event) {
+  var selection = event.detail['value'][0];
+  if (selection != null) {
+    var rowKey = selection['startKey']['row'];
+    self.modelToUpdate = self.EmpCollection.get(rowKey);
+    self.updateEmpFields(self.modelToUpdate);
+  }
+};
+
+
+self.updateEmp = function() {
+  self.modelToUpdate = self.EmpCollection.get(self.inputEmpID());
+  self.modelToUpdate.save(self.buildEmpModel(), {
+    contentType: 'application/json',
+    success: function(model, response) {
+      console.log(self.inputEmpID() + " -- updated successfully")
+    },
+    error: function(jqXHR, textstatus, errorThrown) {
+      console.log(self.inputEmpID + " --- " + jqXHR);
+    }
+  });
+};
+
+
+
+self.removeEmp = function() {
+  self.modelToUpdate = self.EmpCollection.get(self.inputEmpID());
+  var depID = self.modelToUpdate.get('DEPARTMENT_ID');
+  if( self.modelToUpdate){
+    self.modelToUpdate.destroy({
+      success: function(model, response){
+        self.refreshEmployeeList(depID);
+      },
+      error: function(jqXHR, textstatus, errorThrown){console.log("Remove ERROR: " + jqXHR);}
+    });
+    //self.refreshEmployeeList(depID);
+  };
+  //self.resetEmpFields();
+};
+```
+
 
 
 
