@@ -420,10 +420,8 @@ self.handleDepSelectionChanged = function (event) {
     self.modelToUpdate = self.DepCollection.get(rowKey);
     self.updateDepFields(self.modelToUpdate);
 
-    //handle emp listing
-    var depId = self.modelToUpdate.get('id');
-    self.refreshEmployeeList(depId);
-    self.resetEmpFields();
+    //handle emp listing:
+
   }
 };
 ```
@@ -478,6 +476,14 @@ self.updateDepFields = function (model) {
   self.inputLocationName(model.get('LOCATION_NAME'));
 };
 ```
+
+Refresh teh page.  Your app should look like this:
+<table><tr><td>   
+<img src="images/CRUD_V1.png" alt="alt text" width="400" height="250">
+</td></tr></table>
+
+
+
 
 
 ```js #button { border: none; }
