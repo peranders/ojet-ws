@@ -394,7 +394,6 @@ Open customers.html and replace the content with the datagrid for holding the li
           style="height:200px; max-width:600px"
           aria-label="Data Grid CRUD Demo"
           data="[[deptDataSource]]"
-          on-selection-changed="[[handleDepSelectionChanged]]"
           selection-mode.row="single"
           dnd.reorder.row="enable"
           header.column.style="width:45%">
@@ -403,8 +402,45 @@ Open customers.html and replace the content with the datagrid for holding the li
     </div>
   </div>
 ```
+Refresh the page and you should now see a list of Departments.   
 
+Now add a form to update selected departments.  We start by adding a function for handling the selection of a Department in the list. Add the following to customers.js:
+```js #button { border: none; }
+self.handleDepSelectionChanged = function (event) {
+  var selection = event.detail['value'][0];
+  if (selection != null) {
+    var rowKey = selection['startKey']['row'];
+    self.modelToUpdate = self.DepCollection.get(rowKey);
+    self.updateDepFields(self.modelToUpdate);
 
+    //handle emp listing
+    var depId = self.modelToUpdate.get('id');
+    self.refreshEmployeeList(depId);
+    self.resetEmpFields();
+  }
+};
+```
+Then reference to this function by adding the following line inside the oj-data-grid tag in customers.html:
+```js #button { border: none; }
+on-selection-changed="[[handleDepSelectionChanged]]"
+```
+Then add the form to show the selected department.  Copy this before the last </div> tag in customers.html:
+```js #button { border: none; }
+<div class="oj-flex-item oj-flex oj-sm-flex-items-1 oj-sm-12 oj-md-4 oj-lg-3 oj-xl-2">
+  <div class="oj-flex-item oj-panel">
+    <h2>Edit Department</h2>
+    <div>
+      <oj-form-layout id="dep-form-container" label-edge="top">
+        <oj-input-text id="departmentNameInput" label-hint="Department Name" value="{{inputDepartmentName}}"></oj-input-text>
+        <oj-input-text id="locationNameInput" label-hint="Location Name" value="{{inputLocationName}}"></oj-input-text>
+      </oj-form-layout>
+    </div>
+
+   <!-- Copy Buttons section here -->
+
+  </div>
+</div>
+```
 
 
 

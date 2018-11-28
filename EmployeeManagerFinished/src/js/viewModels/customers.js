@@ -111,7 +111,6 @@ define(['ojs/ojcore', 'knockout', 'jquery','text!../data/restservices.json', 'oj
         };
 
         self.resetDepFields = function(){
-          console.log("**resetDepFields**");
           self.inputDepartmentID(null);
           self.inputDepartmentName(null);
           self.inputLocationName(null);
