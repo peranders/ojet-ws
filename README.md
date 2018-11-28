@@ -407,6 +407,8 @@ Open customers.html and replace the content with the datagrid for holding the li
         </oj-data-grid>
       </div>
     </div>
+  </div>  
+    <!-- Edit Department Section -->
   </div>
 ```
 Refresh the page and you should now see a list of Departments.   
@@ -429,7 +431,7 @@ Then reference to this function by adding the following line inside the oj-data-
 ```js #button { border: none; }
 on-selection-changed="[[handleDepSelectionChanged]]"
 ```
-Then add the form to show the selected department.  Copy this before the last </div> tag in customers.html:
+Then add the form to show the selected department.  Copy this where under comment "Edit Department Section" in customers.html:
 ```js #button { border: none; }
 <div class="oj-flex-item oj-flex oj-sm-flex-items-1 oj-sm-12 oj-md-4 oj-lg-3 oj-xl-2">
   <div class="oj-flex-item oj-panel">
@@ -445,6 +447,7 @@ Then add the form to show the selected department.  Copy this before the last </
 
   </div>
 </div>
+
 ```
 
 To handle the form and update fields add the following code segment after your datasource endpoints on the top of customer.js:
