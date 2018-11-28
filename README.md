@@ -322,7 +322,7 @@ on-selection-changed="[[handleSelectionChanged]]"
 
 ## Part 3: CRUD and Master Detail using Oracle JET
 
-Now, we are going to create som master detail views and crud functionality. We are going to put that in the "Custiomer" tab.  First change the name of the tab from Customer to CRUD by modifying the navData section in the  appController.js file:
+Now, we are going to create som master detail views and crud functionality. We are going to put that in the "Customer" tab.  First change the name of the tab from Customer to CRUD by modifying the navData section in the  appController.js file:
 ```js #button { border: none; }
 // Navigation setup
 var navData = [
@@ -330,7 +330,7 @@ var navData = [
  iconClass: 'oj-navigationlist-item-icon demo-icon-font-24 demo-chart-icon-24'},
 {name: 'Incidents', id: 'incidents',
  iconClass: 'oj-navigationlist-item-icon demo-icon-font-24 demo-fire-icon-24'},
-{name: <b>'CRUD'</b>, id: 'customers',
+{name: 'CRUD', id: 'customers',
  iconClass: 'oj-navigationlist-item-icon demo-icon-font-24 demo-people-icon-24'},
 {name: 'About', id: 'about',
  iconClass: 'oj-navigationlist-item-icon demo-icon-font-24 demo-info-icon-24'}
@@ -344,7 +344,7 @@ We will also add basic update and delete functionality for the records. After yo
 <img src="images/crudFinished.png" alt="alt text" width="400" height="250">
 </td></tr></table>
 
-We will start by adding the list of deparments.  The first thing we need to do is to update our pointers to the restendpoints for retrieving the departments and list of emploees for each department. Modify your restservices.json file in the srs/data directory like this:
+We will start by adding the list of deparments.  The first thing we need to do is to update our pointers to the rest endpoints for retrieving the departments and list of emploees for each department. Modify your restservices.json file in the srs/data directory like this:
 
 ```js #button { border: none; }
 {
@@ -353,6 +353,18 @@ We will start by adding the list of deparments.  The first thing we need to do i
   "empsByDepartment": "http://localhost:3000/employees?DEPARTMENT_ID="
 }
 ```
+
+To reference the restservices.json file and the other ui components we are going to use in this tab, add the following to the define section at the top of the customers.js file with this:
+```js #button { border: none; }
+,'jquery','text!../data/restservices.json', 'ojs/ojdatagrid', 'ojs/ojcollectiondatagriddatasource','ojs/ojinputtext', 'ojs/ojformlayout', 'ojs/ojmasonrylayout'
+```
+
+Then add restservices as a parameter to the function.  The completed function definition should now look like this:
+```js #button { border: none; }
+define(['ojs/ojcore', 'knockout', 'jquery','text!../data/restservices.json', 'ojs/ojdatagrid', 'ojs/ojcollectiondatagriddatasource','ojs/ojinputtext', 'ojs/ojformlayout', 'ojs/ojmasonrylayout'],
+ function(oj, ko, $, restservices) {
+```
+
 We will start by adding the list of departments. Open the customer.js file and add the following lines after "var self = this":
 ```js #button { border: none; }
 //Set data source endpoint
