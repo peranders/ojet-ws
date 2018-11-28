@@ -9,7 +9,7 @@ The purpose of this script is to show how to put together a CRUD scenario in an 
 The application you'll create in this workshop will look as follows:
 
 <table><tr><td>   
-<img src="Screen%20Shot%202018-06-24%20at%2022.35.42.png" alt="alt text" width="500" height="420">
+<img src="images/CRUD_v3.png" alt="alt text" width="500" height="420">
 </td></tr></table>
 
 #### Table of Contents
@@ -25,7 +25,9 @@ Part 2: Simple Usage of Oracle JET
    * Displaying the Selected Data in an Oracle JET Form
 
 Part 3: CRUD and Master Detail using Oracle JET
-   * Creating CRUD Functionality
+   * Create list of Departments 
+   * Update and delete Departments
+   * Add list of Employees for each department with Edit functionality
 
 Part 4: Optional
    * Pop up edit windows
@@ -74,10 +76,13 @@ You should see something like this:
    4. Go to http://localhost:3000/employees and see your employee data via your fake REST endpoint:
 
 <table><tr><td>   
-<img src="images/employees.png" alt="alt text" width="250" height="250">
+<img src="images/employees.png" alt="alt text" width="200" height="250">
 </td></tr></table>
 
 Try the same thing with http://localhost:3000/departments
+
+**Tip:** Take a copy of the DepEmpData.json file. If you want reset the test data after testing CRUD functionality with your app later, just replace the DepEmpData.json with the copy and restart the json-server.
+
 
 Json server also support a lot of other variants like: http://localhost:3000/employees?DEPARTMENT_ID=90 that only shows employees in the given department.
 
@@ -337,6 +342,8 @@ var navData = [
 ];
 ```
 
+### (a) Create list of Departments
+
 We are going to retrieve a list of departments and the corresponding list of employees for that departments.  
 We will also add basic update and delete functionality for the records. After you finish it will look something like this:
 
@@ -413,6 +420,7 @@ Open customers.html and replace the content with the datagrid for holding the li
 ```
 Refresh the page and you should now see a list of Departments.   
 
+### (b) Update and delete Departments
 Now add a form to update selected departments.  We start by adding a function for handling the selection of a Department in the list. Add the following to customers.js:
 ```js #button { border: none; }
 self.handleDepSelectionChanged = function (event) {
@@ -552,7 +560,7 @@ self.resetDepFields = function(){
 
 You should now see update and remove buttons below the form.  Try to remove and update some departments.
 
-
+### (c) Add list of Employees for each department with Edit functionality
 We are now going to add a list of employees for each department.  For this we need to modify the rest URLs used by the collection objects so we start by adding the following function on top of customer.js after the endpoint definitions:
 ```js #button { border: none; }
 function getVerb(verb) {
@@ -768,3 +776,7 @@ http://www.oracle.com/webfolder/technetwork/jet/jetCookbook.html
 
 E.g You could try to move the edit forms to a pop up window by utilizing the JET Dialog Component:
 https://www.oracle.com/webfolder/technetwork/jet/jetCookbook.html?component=dialog&demo=modal
+
+Try to connect the application to a real rest service. For instance you could try to use the ORDS service on top of the DEPT, EMP tables in the Oracle DB. You would need to have a look at the empRestUrl function to handle other REST endpoints and APIs.
+
+You could also extend the app with CREATE functionality as the current version only supports deletes and updates.  
