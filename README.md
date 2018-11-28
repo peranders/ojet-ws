@@ -231,10 +231,7 @@ Now, replace the hardcoded url statement in dashboard.js with this:
 //self.url = 'http://localhost:3000/employees';
 self.url = JSON.parse(restservices).employees;
 ```
-with:
-```js #button { border: none; }
-self.url = JSON.parse(restservices).departments;
-```
+
 After adding new files, first kill the 'ojet' process in the Terminal window, using Ctrl-C, and then restart it. The 'watch' process, provided by 'ojet', will only look for changes to existing files; it will not build and re-serve new files.
 
 ### (c) Displaying the Selected Data in an Oracle JET Form
@@ -325,7 +322,84 @@ on-selection-changed="[[handleSelectionChanged]]"
 
 ## Part 3: CRUD and Master Detail using Oracle JET
 
+Now, we are going to create som master detail views and crud functionality. We are going to put that in the "Custiomer" tab.  First change the name of the tab from Customer to CRUD by modifying the navData section in the  appController.js file:
+```js #button { border: none; }
+// Navigation setup
+var navData = [
+{name: 'Dashboard', id: 'dashboard',
+ iconClass: 'oj-navigationlist-item-icon demo-icon-font-24 demo-chart-icon-24'},
+{name: 'Incidents', id: 'incidents',
+ iconClass: 'oj-navigationlist-item-icon demo-icon-font-24 demo-fire-icon-24'},
+{name: <b>'CRUD'</b>, id: 'customers',
+ iconClass: 'oj-navigationlist-item-icon demo-icon-font-24 demo-people-icon-24'},
+{name: 'About', id: 'about',
+ iconClass: 'oj-navigationlist-item-icon demo-icon-font-24 demo-info-icon-24'}
+];
+```
 
+We are going to retrieve a list of departments and the corresponding list of employees for that departments.  
+We will also add basic update and delete functionality for the records. After you finish it will look something like this:
+
+<table><tr><td>   
+<img src="images/crudFinished.png" alt="alt text" width="400" height="250">
+</td></tr></table>
+
+We will start by adding the list of deparments.  The first thing we need to do is to update our pointers to the restendpoints for retrieving the departments and list of emploees for each department. Modify your restservices.json file in the srs/data directory like this:
+
+```js #button { border: none; }
+{
+  "employees": "http://localhost:3000/employees",
+  "departments": "http://localhost:3000/departments",
+  "empsByDepartment": "http://localhost:3000/employees?DEPARTMENT_ID="
+}
+```
+We will start by adding the list of departments. Open the customer.js file and add the following lines after "var self = this":
+```js #button { border: none; }
+//Set data source endpoint
+self.DeptUrl = JSON.parse(restservices).departments;
+self.EmpsByDeptUrl = JSON.parse(restservices).empsByDepartment;
+self.EmpUrl = JSON.parse(restservices).employees;
+```
+Then add the DepCollection object after your datasouce endpoints:
+```js #button { border: none; }
+//Set collections
+self.DepCollection = new oj.Collection(null, {
+    model: new oj.Model.extend({idAttribute: 'id'}),
+    url: self.DeptUrl
+  }
+);
+```
+Open customers.html and replace the content with the datagrid for holding the list of Departmens:
+
+```js #button { border: none; }
+<div class="oj-flex" style="width: 100%">
+  <div class="oj-flex-item oj-flex oj-sm-flex-items-1 oj-sm-12 oj-md-6 oj-lg-7 oj-xl-7">
+    <div class="oj-flex-item oj-panel">
+      <h2>Departments</h2>
+      <div>
+        <oj-data-grid
+          id="depDatagrid"
+          style="height:200px; max-width:600px"
+          aria-label="Data Grid CRUD Demo"
+          data="[[deptDataSource]]"
+          on-selection-changed="[[handleDepSelectionChanged]]"
+          selection-mode.row="single"
+          dnd.reorder.row="enable"
+          header.column.style="width:45%">
+        </oj-data-grid>
+      </div>
+    </div>
+  </div>
+```
+
+
+
+
+
+
+```js #button { border: none; }
+
+```
 
 
 Experiment with other components in the Oracle JET Cookbook and see what they look like in Arabic:
