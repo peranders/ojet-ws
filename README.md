@@ -224,8 +224,17 @@ define(['ojs/ojcore', 'knockout', 'jquery', 'text!../data/restservices.json',
         function (oj, ko, $, restservices) {
 ```
 
-What does 'text!' mean? That's the protocol defined by https://github.com/requirejs/text, which is part of Oracle JET, used for loading text resources, such as 'endpoints.json'.
+What does 'text!' mean? That's the protocol defined by https://github.com/requirejs/text, which is part of Oracle JET, used for loading text resources, such as 'restservices.json'.
 
+Now, replace the hardcoded url statement in dashboard.js with this:
+```js #button { border: none; }
+//self.url = 'http://localhost:3000/employees';
+self.url = JSON.parse(restservices).employees;
+```
+with:
+```js #button { border: none; }
+self.url = JSON.parse(restservices).departments;
+```
 After adding new files, first kill the 'ojet' process in the Terminal window, using Ctrl-C, and then restart it. The 'watch' process, provided by 'ojet', will only look for changes to existing files; it will not build and re-serve new files.
 
 ### (c) Displaying the Selected Data in an Oracle JET Form

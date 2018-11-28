@@ -2,17 +2,25 @@
  Copyright (c) 2014, 2018, Oracle and/or its affiliates.
  The Universal Permissive License (UPL), Version 1.0
  -->
-<div class="oj-hybrid-padding">
-  <h1>Dashboard Content Area</h1>
-  <div>
-    <oj-data-grid
-      id="datagrid"
-      style="height:400px; max-width:477px"
-      aria-label="Data Grid CRUD Demo"
-      data="[[dataSource]]"
-      selection-mode.row="single"
-      dnd.reorder.row="enable"
-      header.column.style="width:150px">
-    </oj-data-grid>
-  </div>
-</div>
+ <div class="oj-hybrid-padding">
+   <h1>Dashboard Content Area</h1>
+   <div>
+     <oj-data-grid
+          id="datagrid"
+          style="height:200px; max-width:477px"
+          data="[[dataSource]]"
+          selection-mode.row="single"
+          dnd.reorder.row="enable"
+          on-selection-changed="[[handleSelectionChanged]]"
+          header.column.style="width:100px" >
+     </oj-data-grid>
+
+     <oj-form-layout id="form-container" label-edge="top">
+     <oj-input-text id="firstNameInput" label-hint="First Name" value="[[inputFirstName]]"></oj-input-text>
+     <oj-input-text id="lastNameInput" label-hint="Last Name" value="[[inputLastName]]"></oj-input-text>
+     <oj-input-text id="inputHireDate" label-hint="Date Hired" value="[[inputHireDate]]"></oj-input-text>
+     <oj-input-text id="inputSalary" label-hint="Salary" value="[[inputSalary]]"></oj-input-text>
+     </oj-form-layout>
+
+   </div>
+ </div>
