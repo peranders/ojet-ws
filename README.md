@@ -748,21 +748,23 @@ Your app should look something like this:
 
 Notice that the Employee list is not updated when we select department.  We are going to fix that now.
 
-In the handleEmpSelectionChanged function, paste the following code after the "//handle emp listing comment":
+In the handleEmpSelectionChanged function, paste the following code after the "//handle emp listing" comment:
 ```js #button { border: none; }
 var depId = self.modelToUpdate.get('id');
 self.refreshEmployeeList(depId);
 self.resetEmpFields();
 ```
 
+Now your finished application should look something like the figure below.  Try to update and remove some employees.  
+table><tr><td>   
+<img src="images/CRUD_v3.png" alt="alt text" width="400" height="250">
+</td></tr></table>
 
 
 
-```js #button { border: none; }
-
-```
-
-
-Experiment with other components in the Oracle JET Cookbook and see what they look like in Arabic:
-
+## Part 4: Optional
+Experiment with other components in the Oracle JET Cookbook:
 http://www.oracle.com/webfolder/technetwork/jet/jetCookbook.html
+
+E.g You could try to move the edit forms to a pop up window by utilizing the JET Dialog Component:
+https://www.oracle.com/webfolder/technetwork/jet/jetCookbook.html?component=dialog&demo=modal
