@@ -595,6 +595,20 @@ self.inputEmpFirstName = ko.observable();
 self.inputEmpSalary = ko.observable();
 ```
 
+After your update it should look like this:
+```js #button { border: none; }
+//Set local vars to hold form values
+var nextKey = 121;
+self.inputDepartmentID = ko.observable(nextKey);
+self.inputDepartmentName = ko.observable();
+self.inputLocationName = ko.observable();
+
+self.inputEmpID = ko.observable(0);
+self.inputEmpLastName = ko.observable();
+self.inputEmpFirstName = ko.observable();
+self.inputEmpSalary = ko.observable();
+```
+
 The following functions are equivalent to the corresponding functions for handling Department. Paste the following code after self.removeDep function definition:
 ```js #button { border: none; }
 self.buildEmpModel = function () {
@@ -676,7 +690,52 @@ self.removeEmp = function() {
 };
 ```
 
+Now update the customer.html to show the list of employees and the form update fields for Employee. Paste the following at the bottom of the customer.html:
+```js #button { border: none; }
+<br>
 
+<div class="oj-flex" style="width: 100%">
+  <div class="oj-flex-item oj-flex oj-sm-flex-items-1 oj-sm-12 oj-md-6 oj-lg-7 oj-xl-7">
+    <div class="oj-flex-item oj-panel">
+      <h2>Employees</h2>
+      <div>
+        <oj-data-grid
+          id="empDatagrid"
+          style="height:200px; max-width:600px"
+          aria-label="Data Grid CRUD Demo"
+          data="{{empDataSource}}"
+          on-selection-changed="[[handleEmpSelectionChanged]]"
+          selection-mode.row="single"
+          dnd.reorder.row="enable"
+          header.column.style="width:45%">
+        </oj-data-grid>
+      </div>
+    </div>
+  </div>
+
+  <div class="oj-flex-item oj-flex oj-sm-flex-items-1 oj-sm-12 oj-md-4 oj-lg-3 oj-xl-2">
+    <div class="oj-flex-item oj-panel">
+      <h2>Edit Employee</h2>
+      <div>
+        <oj-form-layout id="emp-form-container" label-edge="top">
+          <oj-input-text id="EmpLastNameInput" label-hint="Last Name" value="{{inputEmpLastName}}"></oj-input-text>
+          <oj-input-text id="EmpFirstNameInput" label-hint="First Name" value="{{inputEmpFirstName}}"></oj-input-text>
+        </oj-form-layout>
+      </div>
+
+      <!-- Buttons -->
+      <div class="oj-form-control-group"
+                         aria-label="submit group" role="group">
+                        <!--oj-button id="addbutton" data-bind="click: add">Add</oj-button-->
+                        <oj-button id="updateButton" data-bind="click: updateEmp">Update</oj-button>
+                        <oj-button id="removeButton" data-bind="click: removeEmp">Remove</oj-button>
+
+      </div>
+
+    </div>
+  </div>
+</div>
+```
 
 
 
