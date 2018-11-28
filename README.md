@@ -483,6 +483,76 @@ Refresh teh page.  Your app should look like this:
 </td></tr></table>
 
 
+Next thing is to add buttons for deleting and updating Departments.  We start by adding the buttons for these action on the page.  Add the following code after  "<!-- Copy Buttons section here -->" in customers.html:
+```js #button { border: none; }
+<div class="oj-form-control-group"
+                   aria-label="submit group" role="group">
+                  <!--oj-button id="addbutton" data-bind="click: add">Add</oj-button-->
+                  <oj-button id="updateButton" data-bind="click: updateDep">Update</oj-button>
+                  <oj-button id="removeButton" data-bind="click: removeDep">Remove</oj-button>
+                <!--
+                  <oj-button id="resetFields" data-bind="click: resetFields">Reset Fields</oj-button>
+                -->
+</div>
+```
+
+Now we need to add the functions for the update actions in customers.js.  Add the following code in customers.js after handleDepSelectionChanged() function:
+
+```js #button { border: none; }
+self.updateDep = function() {
+  self.modelToUpdate = self.DepCollection.get(self.inputDepartmentID());
+  self.modelToUpdate.save(self.buildDepModel(), {
+    contentType: 'application/json',
+    success: function(model, response) {
+      console.log(self.inputDepartmentID() + " -- updated successfully")
+    },
+    error: function(jqXHR, textstatus, errorThrown) {
+      console.log(self.inputDepartmentID + " --- " + jqXHR);
+    }
+  });
+};
+
+self.removeDep = function() {
+  self.modelToUpdate = self.DepCollection.get(self.inputDepartmentID());
+  if( self.modelToUpdate){
+    self.modelToUpdate.destroy({
+      success: function(model, response){
+        //self.refreshEmployeeList(0);
+      },
+      error: function(jqXHR, textstatus, errorThrown){console.log("Remove ERROR: " + jqXHR);}
+    });
+  };
+  self.resetDepFields();
+
+};
+```
+Then add function for resetting variables after a Deparment has been updated. Add this after the updateDepFields function variable. :
+```js #button { border: none; }
+self.resetDepFields = function(){
+  self.inputDepartmentID(null);
+  self.inputDepartmentName(null);
+  self.inputLocationName(null);
+};
+```
+
+Your code should look like this:
+```js #button { border: none; }
+// Function to update fields in update form
+self.updateDepFields = function (model) {
+  self.inputDepartmentID(model.get('id'));
+  self.inputDepartmentName(model.get('DEPARTMENT_NAME'));
+  self.inputLocationName(model.get('LOCATION_NAME'));
+};
+
+self.resetDepFields = function(){
+  self.inputDepartmentID(null);
+  self.inputDepartmentName(null);
+  self.inputLocationName(null);
+};
+```
+
+
+
 
 
 
