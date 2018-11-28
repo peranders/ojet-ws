@@ -372,7 +372,7 @@ self.DeptUrl = JSON.parse(restservices).departments;
 self.EmpsByDeptUrl = JSON.parse(restservices).empsByDepartment;
 self.EmpUrl = JSON.parse(restservices).employees;
 ```
-Then add the DepCollection object after your datasouce endpoints:
+Then add the DepCollection object and datasource for the grid after your datasouce endpoints:
 ```js #button { border: none; }
 //Set collections
 self.DepCollection = new oj.Collection(null, {
@@ -380,8 +380,15 @@ self.DepCollection = new oj.Collection(null, {
     url: self.DeptUrl
   }
 );
+
+//Set datasources for oj-data-grid
+self.deptDataSource = new oj.CollectionDataGridDataSource(
+  self.DepCollection, {
+    rowHeader: 'id',
+    columns:['DEPARTMENT_NAME', 'LOCATION_NAME']
+  });
 ```
-Open customers.html and replace the content with the datagrid for holding the list of Departmens:
+Open customers.html and replace the content with the datagrid for holding the list of Departments:
 
 ```js #button { border: none; }
 <div class="oj-flex" style="width: 100%">
