@@ -12,6 +12,8 @@ The application you'll create in this workshop will look as follows:
 <img src="images/CRUD_v3.png" alt="alt text" width="500" height="420">
 </td></tr></table>
 
+You can find the completed app in the EmployeeManagerFinished folder.
+
 #### Table of Contents
 
 Part 1: Set Up the Environment
@@ -25,12 +27,12 @@ Part 2: Simple Usage of Oracle JET
    * Displaying the Selected Data in an Oracle JET Form
 
 Part 3: CRUD and Master Detail using Oracle JET
-   * Create list of Departments 
+   * Create list of Departments
    * Update and delete Departments
    * Add list of Employees for each department with Edit functionality
 
 Part 4: Optional
-   * Pop up edit windows
+   * Experient with other JET Components.
 
 ## Part 1: Set Up the Environment
 
@@ -777,6 +779,7 @@ http://www.oracle.com/webfolder/technetwork/jet/jetCookbook.html
 E.g You could try to move the edit forms to a pop up window by utilizing the JET Dialog Component:
 https://www.oracle.com/webfolder/technetwork/jet/jetCookbook.html?component=dialog&demo=modal
 
-Try to connect the application to a real rest service. For instance you could try to use the ORDS service on top of the DEPT, EMP tables in the Oracle DB. You would need to have a look at the empRestUrl function to handle other REST endpoints and APIs.
+Try to connect the application to a real rest service. For instance you could try to use the ORDS service on top of the DEPT, EMP tables in the Oracle DB: https://www.oracle.com/database/technologies/appdev/rest.html
+You would need to have a look at the empRestUrl function to handle other REST endpoints and APIs.
 
 You could also extend the app with CREATE functionality as the current version only supports deletes and updates.  
