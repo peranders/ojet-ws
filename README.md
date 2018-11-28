@@ -741,6 +741,20 @@ Now update the customer.html to show the list of employees and the form update f
 ```
 
 
+Your app should look something like this:
+<table><tr><td>   
+<img src="images/CRUD_v2.png" alt="alt text" width="400" height="250">
+</td></tr></table>
+
+Notice that the Employee list is not updated when we select department.  We are going to fix that now.
+
+In the handleEmpSelectionChanged function, paste the following code after the "//handle emp listing comment":
+```js #button { border: none; }
+var depId = self.modelToUpdate.get('id');
+self.refreshEmployeeList(depId);
+self.resetEmpFields();
+```
+
 
 
 
