@@ -449,7 +449,35 @@ Then add the form to show the selected department.  Copy this before the last </
 </div>
 ```
 
+To handle the form and update fields add the following code segment after your datasource endpoints on the top of customer.js:
+```js #button { border: none; }
+//Set local vars to hold form values
+var nextKey = 121;
+self.inputDepartmentID = ko.observable(nextKey);
+self.inputDepartmentName = ko.observable();
+self.inputLocationName = ko.observable();
+```
+Then add the following function below:
+```js #button { border: none; }
+//Function that creates json payload from fields in update form
+self.buildDepModel = function () {
+ return {
+   'id': self.inputDepartmentID(),
+   'DEPARTMENT_NAME': self.inputDepartmentName(),
+   'LOCATION_NAME': self.inputLocationName()
+  };
+};
+```
 
+Then add the following function to update the form elemtents when the selection in the grid changes:
+```js #button { border: none; }
+// Function to update fields in update form
+self.updateDepFields = function (model) {
+  self.inputDepartmentID(model.get('id'));
+  self.inputDepartmentName(model.get('DEPARTMENT_NAME'));
+  self.inputLocationName(model.get('LOCATION_NAME'));
+};
+```
 
 
 ```js #button { border: none; }
